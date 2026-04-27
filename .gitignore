@@ -71,3 +71,6 @@ Thumbs.db
 *.log
 *.tmp
 .cache/
+
+# Internal build artifacts
+*BUILD_COMPLETE.md
