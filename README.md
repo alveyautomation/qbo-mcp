@@ -1,6 +1,6 @@
-# qbo-mcp
+﻿# qbo-mcp
 
-> The Model Context Protocol server for QuickBooks Online. Plug Claude into your books — customers, vendors, invoices, bills, and the chart of accounts — read-only, in five minutes.
+> The Model Context Protocol server for QuickBooks Online. Plug Claude into your books â€” customers, vendors, invoices, bills, and the chart of accounts â€” read-only, in five minutes.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -10,9 +10,9 @@
 
 Roughly seven million businesses keep their books in QuickBooks Online. Intuit publishes a capable REST API but no official MCP server, so every team that wants Claude (or any MCP-aware AI assistant) to *see* their books ends up writing the same OAuth-and-pagination glue from scratch.
 
-If you use Claude to operate finance day-to-day — chasing AR, sanity-checking AP, prepping for a board update — that gap is the difference between *"how much did Acme owe us at the end of March?"* working out of the box and *"how much did Acme owe us at the end of March?"* requiring a custom integration.
+If you use Claude to operate finance day-to-day â€” chasing AR, sanity-checking AP, prepping for a board update â€” that gap is the difference between *"how much did Acme owe us at the end of March?"* working out of the box and *"how much did Acme owe us at the end of March?"* requiring a custom integration.
 
-`qbo-mcp` closes that gap. It's a tiny, well-tested, MIT-licensed MCP server that exposes eight read-only QBO endpoints to any MCP client. Built from years of running production QBO automation against real money flow — every edge that surfaced in production (token rotation, 429 backoff, mid-page expiry, query-string escaping) is handled in `client.py` so you don't have to learn it the hard way.
+`qbo-mcp` closes that gap. It's a tiny, well-tested, MIT-licensed MCP server that exposes eight read-only QBO endpoints to any MCP client. Built from years of running production QBO automation against real money flow â€” every edge that surfaced in production (token rotation, 429 backoff, mid-page expiry, query-string escaping) is handled in `client.py` so you don't have to learn it the hard way.
 
 ## What you can do with it
 
@@ -47,7 +47,7 @@ Write endpoints (create invoice, create bill, post journal entry) are intentiona
 pip install qbo-mcp
 ```
 
-> v0.1 ships from this repository. PyPI publication is pending — for now, install with `pip install git+<repo URL TBD post-launch>` or clone and run `pip install -e .` locally.
+> v0.1 ships from this repository. PyPI publication is pending â€” for now, install with `pip install git+https://github.com/alveyautomation/qbo-mcp` or clone and run `pip install -e .` locally.
 
 ## One-time OAuth setup
 
@@ -55,7 +55,7 @@ QBO uses OAuth 2.0 with rotating refresh tokens. You only do this dance **once**
 
 1. **Create an app** at <https://developer.intuit.com/>. Pick the **Accounting** scope. Copy the `client_id` and `client_secret`.
 2. **Visit the OAuth Playground** at <https://developer.intuit.com/app/developer/playground>. Select your app, pick the environment (Sandbox or Production), and click *Get Authorization Code*. Sign in to the QuickBooks company you want to expose.
-3. **Exchange the code** for tokens — the Playground does this for you. Copy:
+3. **Exchange the code** for tokens â€” the Playground does this for you. Copy:
    - `refresh_token` (long string, lasts 100 days of inactivity)
    - `realmId` (numeric, identifies your QBO company)
 4. **Save them** to `.env`:
@@ -70,7 +70,7 @@ QBO_ENVIRONMENT=production       # or "sandbox"
 
 That's it. The first tool call exchanges the refresh token for an access token; subsequent calls reuse the cached access token until it expires (~55 minutes), at which point the client refreshes silently.
 
-> **Refresh-token rotation:** Intuit issues a *new* refresh token on every refresh and immediately invalidates the old one. If your deployment runs in a single long-lived process, this is invisible. If your deployment restarts often (containers, serverless), persist the rotated token. Subscribe to `QBOClient(on_refresh_token_rotated=…)` to capture every rotation. See [SECURITY.md](SECURITY.md) for the full story.
+> **Refresh-token rotation:** Intuit issues a *new* refresh token on every refresh and immediately invalidates the old one. If your deployment runs in a single long-lived process, this is invisible. If your deployment restarts often (containers, serverless), persist the rotated token. Subscribe to `QBOClient(on_refresh_token_rotated=â€¦)` to capture every rotation. See [SECURITY.md](SECURITY.md) for the full story.
 
 ## Wire into Claude Code
 
@@ -155,7 +155,7 @@ qbo_search_invoices(
 )
 ```
 
-Window is inclusive on `Invoice.TxnDate`. The `status` filter is a convenience over QBO's `Balance` field — `"open"` returns invoices with `Balance > 0`, `"paid"` returns invoices with `Balance = 0`.
+Window is inclusive on `Invoice.TxnDate`. The `status` filter is a convenience over QBO's `Balance` field â€” `"open"` returns invoices with `Balance > 0`, `"paid"` returns invoices with `Balance = 0`.
 
 Pagination is handled transparently: QBO's query endpoint requires explicit `STARTPOSITION` / `MAXRESULTS` clauses, and the client walks pages until either `limit` is reached or the upstream returns a short page. The response includes `limit_reached: true` when `limit` was the stopping condition.
 
@@ -182,7 +182,7 @@ Returns every active account in the realm. Each record includes `Id`, `Name`, `A
 ## Local development
 
 ```bash
-git clone <repo URL TBD post-launch>
+git clone https://github.com/alveyautomation/qbo-mcp
 cd qbo-mcp
 python -m venv .venv && source .venv/bin/activate    # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
@@ -200,15 +200,15 @@ Integration tests against a real QBO sandbox realm are gated behind `QBO_INTEGRA
 
 ## Troubleshooting
 
-**`Failed to refresh QBO access token`** — refresh token has been rotated out from under you, or the app's `client_id` / `client_secret` is wrong. Refresh tokens are invalidated as soon as a new one is issued, so if two processes share a refresh token, whichever one refreshes first wins. Solution: persist rotated tokens (see `on_refresh_token_rotated`) or run only one server per refresh-token credential.
+**`Failed to refresh QBO access token`** â€” refresh token has been rotated out from under you, or the app's `client_id` / `client_secret` is wrong. Refresh tokens are invalidated as soon as a new one is issued, so if two processes share a refresh token, whichever one refreshes first wins. Solution: persist rotated tokens (see `on_refresh_token_rotated`) or run only one server per refresh-token credential.
 
-**`Missing required environment variables`** — the server tried to start before its `.env` was loaded. Either export the vars in the parent shell, or ensure your MCP host config includes them in the `env` block.
+**`Missing required environment variables`** â€” the server tried to start before its `.env` was loaded. Either export the vars in the parent shell, or ensure your MCP host config includes them in the `env` block.
 
-**Empty results despite known data** — confirm `QBO_ENVIRONMENT` matches the credential. A sandbox refresh token against the production API host (or vice versa) will authenticate but return an empty company.
+**Empty results despite known data** â€” confirm `QBO_ENVIRONMENT` matches the credential. A sandbox refresh token against the production API host (or vice versa) will authenticate but return an empty company.
 
-**Slow large date windows** — QBO's query endpoint paginates at a hard cap of 1000 rows per page. The client walks pages transparently, but a 5-year invoice scan still means many round-trips. Consider tightening `date_from` / `date_to` or filtering by `status`.
+**Slow large date windows** â€” QBO's query endpoint paginates at a hard cap of 1000 rows per page. The client walks pages transparently, but a 5-year invoice scan still means many round-trips. Consider tightening `date_from` / `date_to` or filtering by `status`.
 
-**`Transient QBO error: HTTP 429`** — Intuit's rate limiter kicked in. The client retries automatically with exponential backoff; if you see this surface in tool output, you've exceeded the configured `QBO_MAX_RETRIES`. Bump it or slow down your queries.
+**`Transient QBO error: HTTP 429`** â€” Intuit's rate limiter kicked in. The client retries automatically with exponential backoff; if you see this surface in tool output, you've exceeded the configured `QBO_MAX_RETRIES`. Bump it or slow down your queries.
 
 ## Contributing
 
@@ -217,12 +217,13 @@ Issues and pull requests welcome. Please:
 - Run `pytest` before opening a PR (`pip install -e ".[dev]"`).
 - Run `pre-commit run --all-files`.
 - Keep additions to v0.1 scope read-only. Write endpoints land in v0.2.
-- Synthetic data only in tests — no real customer names, vendor names, or realm IDs.
+- Synthetic data only in tests â€” no real customer names, vendor names, or realm IDs.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT â€” see [LICENSE](LICENSE).
 
 ## Disclaimer
 
 `qbo-mcp` is an unofficial, third-party integration. It is **not endorsed by, affiliated with, or supported by Intuit Inc.** "QuickBooks" and "QuickBooks Online" are trademarks of Intuit Inc. Use at your own risk; verify behavior against your realm before depending on it for production decisions.
+
