@@ -1,7 +1,7 @@
 """Synthetic fixtures used across the test suite.
 
 All identifiers, names, and amounts are invented for testing. Any resemblance
-to a real QuickBooks Online realm is coincidental — this file must never gain
+to a real QuickBooks Online realm is coincidental, this file must never gain
 real-world identifiers, customer names, vendor names, or account numbers.
 """
 

@@ -1,6 +1,6 @@
 """Tests for the QBO HTTP client.
 
-All tests use a mocked `requests.Session` — no live HTTP, no real
+All tests use a mocked `requests.Session`, no live HTTP, no real
 credentials. Synthetic fixtures defined in tests/fixtures.py.
 """
 
@@ -154,7 +154,7 @@ def test_refresh_token_callback_exception_does_not_break_client(monkeypatch):
         raise RuntimeError("disk full")
 
     client = _make_client(session, on_refresh_token_rotated=bad_callback)
-    # Should not raise — callback exceptions are swallowed and logged.
+    # Should not raise, callback exceptions are swallowed and logged.
     client.search_customers(query="x")
 
 

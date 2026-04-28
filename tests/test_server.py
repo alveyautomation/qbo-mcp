@@ -299,7 +299,7 @@ def test_get_chart_of_accounts_propagates_error(monkeypatch):
 
 def test_get_client_initializes_settings_and_client(env_credentials, monkeypatch):
     """End-to-end lazy init: Settings reads env, QBOClient is constructed."""
-    # Don't actually let it make HTTP calls — just verify init wiring.
+    # Don't actually let it make HTTP calls, just verify init wiring.
     out = srv._get_client()
     assert out is not None
     assert srv._settings is not None

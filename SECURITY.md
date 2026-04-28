@@ -36,7 +36,7 @@ the long-lived secrets only from environment variables.
 QBO refresh tokens **rotate on every refresh**. The client exposes an
 `on_refresh_token_rotated` callback so your deployment can persist the new
 token to durable storage. Failing to do this means a process restart can
-lose the only valid refresh token — a denial-of-service for your own
+lose the only valid refresh token, a denial-of-service for your own
 integration, but not a data leak. If you find a code path where rotated
 tokens are dropped silently or written to logs, report it as a security
 issue.

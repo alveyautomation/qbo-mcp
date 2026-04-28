@@ -23,8 +23,7 @@ logger = logging.getLogger(__name__)
 
 mcp = FastMCP("qbo-mcp")
 
-# Lazy singletons. We don't want to require credentials at import time —
-# the MCP host may launch the server with a degenerate environment for
+# Lazy singletons. We don't want to require credentials at import time, # the MCP host may launch the server with a degenerate environment for
 # capability discovery.
 _settings: Settings | None = None
 _client: QBOClient | None = None
@@ -303,7 +302,7 @@ def qbo_get_chart_of_accounts() -> str:
 
 
 def main() -> None:
-    """CLI entry point — runs the MCP server over stdio."""
+    """CLI entry point, runs the MCP server over stdio."""
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)s %(name)s %(message)s",

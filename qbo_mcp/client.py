@@ -3,7 +3,7 @@
 The client implements Intuit's OAuth 2.0 refresh-token flow: it exchanges a
 long-lived refresh token for a short-lived access token, caches the access
 token in memory until just before expiry, and refreshes on demand. Refresh
-tokens themselves rotate on every refresh — callers that persist refresh
+tokens themselves rotate on every refresh, callers that persist refresh
 tokens across process restarts should subscribe to `on_refresh_token_rotated`
 to capture the new value.
 
@@ -11,7 +11,7 @@ Read-only by design: every public method here calls a `GET` endpoint or
 issues a `SELECT` query against QBO's read-only query endpoint. There are no
 `POST`, `PUT`, or `DELETE` paths.
 
-State is per-instance — there is no module-level mutable state, so multiple
+State is per-instance, there is no module-level mutable state, so multiple
 clients can run in the same process against different QBO realms without
 interfering.
 
@@ -34,7 +34,7 @@ import requests
 logger = logging.getLogger(__name__)
 
 # QBO's `query` endpoint accepts up to 1000 results per page. We page in
-# chunks of 100 by default — large enough to keep round-trips cheap, small
+# chunks of 100 by default, large enough to keep round-trips cheap, small
 # enough to keep responses well under the 1 MB payload cap.
 QUERY_PAGE_SIZE = 100
 
@@ -145,7 +145,7 @@ class QBOClient:
             raise QBOError("QBO token response missing 'access_token'")
 
         # Intuit returns the new refresh token alongside the access token.
-        # The old one is invalidated on success — capture the new one and
+        # The old one is invalidated on success, capture the new one and
         # notify the caller so they can persist it.
         new_refresh = payload.get("refresh_token")
         if new_refresh and new_refresh != self._refresh_token:

@@ -5,7 +5,7 @@ This is a safety net for forks and downstream deployments. Extend
 `FORBIDDEN_PATTERNS` with your own realm-specific tokens (vendor names,
 customer names, account numbers, realm IDs) before installing the hook in
 a private fork. Out of the box the list is empty for the public repository
-— every contributor should add their own unmergeable identifiers locally
+, every contributor should add their own unmergeable identifiers locally
 and never push that change.
 
 Usage:
